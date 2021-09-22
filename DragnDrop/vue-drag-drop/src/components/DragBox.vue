@@ -38,6 +38,7 @@
           </div>
         </div>
         <button primary v-on:click="saveClick">Save</button>
+        <button primary v-on:click="ResetClick">Reset</button>
       </div>
     </div>
   </div>
@@ -102,50 +103,38 @@ export default {
       }
     },
     saveClick() {
-      var entityFormOptions = {};
-      entityFormOptions["entityName"] = "vel_allocation";
-
- entityFormOptions["useQuickCreateForm"] = true;
- 
+      console.log("Stock:::"+this.clonedAllocationItems.length);
+      console.log("pcfstock Id::::"+this.clonedAllocationItems[0].id);
+      console.log("pcfstock Name::::"+this.clonedAllocationItems[0].name);
+      console.log("Customer::::"+this.clonedCustomerItems.length);
+      console.log("Customer Id::::"+this.clonedCustomerItems[0].id);
+      console.log("Customer Id::::"+this.clonedCustomerItems[0].name);
+      let entityFormOptions = {};
+      let formParameters = {};
+      entityFormOptions["entityName"] = "vel_pcfallocation";
+      entityFormOptions["useQuickCreateForm"] = true;
+      console.log("....................................................................");
+      formParameters["vel_pcfstock"] = this.clonedAllocationItems[0].id; // ID of the user.
+		  formParameters["vel_pcfstockname"] = this.clonedAllocationItems[0].name; // Name of the user.
+		  formParameters["vel_pcfstocktype"] = "vel_pctstockentity"; // Table name. 
       // Open the form.
-      Xrm.Navigation.openForm(entityFormOptions).then(
+      Xrm.Navigation.openForm(entityFormOptions, formParameters).then(
         function (success) {
+           console.log("...........................Open.........................................");
           console.log(success);
-        },
+       },
         function (error) {
           console.log(error);
         }
       );
     },
-    // add() {
-    //   if (this.newTask) {
-    //     this.arrBacklog.push({ name: this.newTask });
-    //     this.newTask = "";
-    //   }
-    // },
+    ResetClick(){
+      this.clonedAllocationItems=[];
+      this.clonedCustomerItems=[];
+    },
+    
   },
-  // mounted() {
-  //   this.newObj = [
-  //     {
-  //       heading: "Section 1",
-  //       content: "something something",
-  //       questionAndAnswer: [
-  //         { question: "Q1fddf", answer: "A1" },
-  //         { question: "Q2", answer: "A2" },
-  //       ],
-  //       sectionNumber:1
-  //     },
-  //     {
-  //       heading: "Section 2",
-  //       content: "something something for the section2",
-  //       questionAndAnswer: [
-  //         { question: "Q1", answer: "A1" },
-  //         { question: "Q2", answer: "A2" },
-  //       ],
-  //       sectionNumber:2
-  //     },
-  //   ];
-  // },
+ 
 };
 </script>
 
