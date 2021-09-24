@@ -11,6 +11,7 @@ type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
 export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 	private mainContainer: HTMLDivElement;
+	y: { name: string; id: number; }[];
 	/**
 	 * Empty constructor.
 	 */
@@ -53,6 +54,12 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		this.StockDragboxObj = new DragBox();
 		this.StockDragboxObj.Name = "STOCK ON HAND";
 		this.StockDragboxObj.boxNumber =2;
+		this.y=[
+			{ name: "Product designer", id: 1 },
+			{ name: "Full-stack developer", id: 2 },
+			{ name: "Product manager", id: 3 },
+			{ name: "Senior front-end developer", id: 4 }
+		],
 		container.appendChild(this.appElement);	
 	}
 
@@ -68,10 +75,10 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		let tempCustomerItems: BoxRecord[] = [];
 		let tempStockItems: BoxRecord[] = [];		
 		this.dragboxObj = [];
-		if(!context.parameters.CustomerDataSet.loading){
+		if(!context.parameters.CustomerOpporunityProductDataSet.loading){
 			//if(context.parameters.CustomerDataSet){
-				context.parameters.CustomerDataSet?.sortedRecordIds.forEach((recordId)=>{
-					let currentRecord=context.parameters.CustomerDataSet.records[recordId];		
+				context.parameters.CustomerOpporunityProductDataSet?.sortedRecordIds.forEach((recordId)=>{
+					let currentRecord=context.parameters.CustomerOpporunityProductDataSet.records[recordId];		
 					let tempBoxItem = new BoxRecord();
 					tempBoxItem.name = currentRecord.getFormattedValue("vel_name");
 					tempBoxItem.property1 = currentRecord.getFormattedValue("vel_decimalfield")?.toString();
@@ -80,16 +87,16 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 					tempCustomerItems.push(tempBoxItem);						
 				});
 				
-				if(context.parameters.CustomerDataSet.sortedRecordIds.length>0){
+				if(context.parameters.CustomerOpporunityProductDataSet.sortedRecordIds.length>0){
 					this.CustomerDragboxObj.items =tempCustomerItems;
 					this.dragboxObj.push(this.CustomerDragboxObj);	
 				}
 			//}
 		}	
-		if(!context.parameters.StockDataSet.loading){
+		if(!context.parameters.StockOnHandDataSet.loading){
 		//if(context.parameters.StockDataSet){
-			context.parameters.StockDataSet?.sortedRecordIds.forEach((recordId)=>{
-				let currentRecord=context.parameters.StockDataSet.records[recordId];		
+			context.parameters.StockOnHandDataSet?.sortedRecordIds.forEach((recordId)=>{
+				let currentRecord=context.parameters.StockOnHandDataSet.records[recordId];		
 				let tempBoxItem = new BoxRecord();
 				tempBoxItem.name = currentRecord.getFormattedValue("vel_name");
 				tempBoxItem.property1 ="";
@@ -98,7 +105,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				tempStockItems.push(tempBoxItem);			
 			});
 			
-			if(context.parameters.StockDataSet.sortedRecordIds.length>0){
+			if(context.parameters.StockOnHandDataSet.sortedRecordIds.length>0){
 				this.StockDragboxObj.items =tempStockItems;
 				this.dragboxObj.push(this.StockDragboxObj);	
 			}
@@ -107,7 +114,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		
 		//this._container.appendChild(this.appElement);	
 		
-		this.vue = new Vue({ el: this.appElement, render: (h) => h(App, { props: { DragBoxObj: this.dragboxObj, lastBoxName: "Allocation" }, }), });
+		this.vue = new Vue({ el: this.appElement, render: (h) => h(App, { props: { DragBoxObj: this.dragboxObj, lastBoxName: "Allocation" ,Countries:this.y} }), });
 
 		// this.labelElement = document.createElement("div");
 		// 	this.labelElement.innerHTML = "Aditya";

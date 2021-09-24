@@ -1,9 +1,16 @@
 <template>
   <div class="drag-drop-box">
     <div class="row">
+     
       <div class="col-md-3 drag-col1" v-for="box in DragnDropBox" :key="box.boxNumber">
         <div class="p-2 alert alert-warning">
           <h3>{{ box.Name }}</h3>
+          <div v-if="box.Name==='CUSTOMER'">
+             <select class="form-control" @change="changeJobTitle($event)">
+              <option value="" selected disabled>Choose</option>
+              <option v-for="Country in Countries" :value="Country.id" :key="Country.id">{{ Country.name }}</option>
+            </select> 
+          </div>
           <draggable class="list-group list-col1" v-model="box.items" :options="availableItemOptions">
             <div class="list-group-item" v-for="item in box.items" :key="item.name">
               <p>{{ item.name }}</p>
@@ -53,23 +60,10 @@ export default {
   props: {
     DragnDropBox: [],
     lastBoxName: { type: String, required: true },
+    Countries:[],
   },
-  data() {
+   data() {
     return {
-      newTask: "",
-      arrBacklog: [
-        { name: "Buyer 1 - Qty - 50" },
-        { name: "Buy2" },
-        { name: "Buy3" },
-        { name: "Buy4" },
-      ],
-      arr2: [
-        { name: "Sup1" },
-        { name: "Sup2" },
-        { name: "Sup3" },
-        { name: "Sup4" },
-      ],
-      arr3: [],
       availableItemOptions: {
         group: {
           name: "items",
@@ -90,37 +84,36 @@ export default {
     };
   },
   methods: {
-    onChangeCustomer() {
-      // alert();
+    onChangeCustomer() {     
       if (this.clonedCustomerItems.length > 1) {
         this.clonedCustomerItems.pop();
       }
     },
-     onChangeAllocation() {
-      // alert();
+     onChangeAllocation() {     
       if (this.clonedAllocationItems.length > 1) {
         this.clonedAllocationItems.pop();
       }
     },
-    saveClick() {
-      console.log("Stock:::"+this.clonedAllocationItems.length);
-      console.log("pcfstock Id::::"+this.clonedAllocationItems[0].id);
-      console.log("pcfstock Name::::"+this.clonedAllocationItems[0].name);
-      console.log("Customer::::"+this.clonedCustomerItems.length);
-      console.log("Customer Id::::"+this.clonedCustomerItems[0].id);
-      console.log("Customer Id::::"+this.clonedCustomerItems[0].name);
+    saveClick() {      
       let entityFormOptions = {};
       let formParameters = {};
-      entityFormOptions["entityName"] = "vel_pcfallocation";
+      entityFormOptions["entityName"] = "vel_reservation";
       entityFormOptions["useQuickCreateForm"] = true;
-      console.log("....................................................................");
-      formParameters["vel_pcfstock"] = this.clonedAllocationItems[0].id; // ID of the user.
-		  formParameters["vel_pcfstockname"] = this.clonedAllocationItems[0].name; // Name of the user.
-		  formParameters["vel_pcfstocktype"] = "vel_pctstockentity"; // Table name. 
+      //Set Stock On Hand Lookup
+      if(this.clonedAllocationItems){
+        formParameters["vel_stockonhand"] = this.clonedAllocationItems[0].id; // ID of the user.
+        formParameters["vel_stockonhandname"] = this.clonedAllocationItems[0].name; // Name of the user.
+        formParameters["vel_stockonhandtype"] = "vel_stockonhand"; // Table name. 
+      }
+       //Set Sales Opportunity Line Lookup
+      if(this.clonedCustomerItems){
+        formParameters["vel_salesopportunityline"] = this.clonedCustomerItems[0].id; // ID of the user.
+        formParameters["vel_salesopportunitylinename"] = this.clonedCustomerItems[0].name; // Name of the user.
+        formParameters["vel_salesopportunitylinetype"] = "opportunityproduct"; // Table name. 
+      }
       // Open the form.
       Xrm.Navigation.openForm(entityFormOptions, formParameters).then(
-        function (success) {
-           console.log("...........................Open.........................................");
+        function (success) {          
           console.log(success);
        },
         function (error) {

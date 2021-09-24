@@ -1,11 +1,11 @@
+
 export class DragBox{
-boxNumber: number;
-items : BoxRecord[];
-Name: string;
-Filters:Filters[];
+    boxNumber: number;
+    items : BoxRecord[];
+    Name: string;
+    Filters:Filters[];
 
 }
-
 export class BoxRecord{
     name: string;
     property1: string;
@@ -21,4 +21,11 @@ export class Filters{
 export class DropDownItem{
     name:string;
     value:string;
+}
+export class Countries{
+    items:Country[];
+}
+export class Country{
+    id:string;
+    name:string;
 }
