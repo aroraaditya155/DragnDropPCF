@@ -1,10 +1,10 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import Vue from 'vue';
 import App from './vue-drag-drop/src/App.vue';
-import { DragBox, DropDownItem } from "./DragBox";
+import { DragBox, DropDownItem,Countries,Country } from "./DragBox";
 import { BoxRecord } from "./DragBox";
 import { Filters } from "./DragBox";
-
+import { CdsService } from "./CdsService";
 
 import DataSetInterfaces = ComponentFramework.PropertyHelper.DataSetApi;
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
@@ -12,11 +12,11 @@ type DataSet = ComponentFramework.PropertyTypes.DataSet;
 export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 	private mainContainer: HTMLDivElement;
 	y: { name: string; id: number; }[];
+	private _context: any;
 	/**
 	 * Empty constructor.
 	 */
-	constructor() {
-
+	constructor() {	
 	}
 	private _container: any;
 	private vue: any;
@@ -27,7 +27,10 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 	public dragboxObj: DragBox[];
 	public CustomerDragboxObj: DragBox; 
 	public StockDragboxObj : DragBox;
-
+	public tempcountry:Country;
+	public CountryItems:Country[]=[];
+	public tempCountries:Countries;
+	public ContryObj:Countries[]=[];
 	/**
 	 * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
 	 * Data-set values are not initialized here, use updateView.
@@ -38,7 +41,8 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 	 */
 	public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void, state: ComponentFramework.Dictionary, container: HTMLDivElement): void {
 		// // Add control initialization code
-		this._container = container;	
+		this._container = container;
+		this._context=context;	
 		this.appElement = document.createElement("div");
 		let tempBoxItem: BoxRecord;
 		let allocationFilters : Filters[];
@@ -54,12 +58,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		this.StockDragboxObj = new DragBox();
 		this.StockDragboxObj.Name = "STOCK ON HAND";
 		this.StockDragboxObj.boxNumber =2;
-		this.y=[
-			{ name: "Product designer", id: 1 },
-			{ name: "Full-stack developer", id: 2 },
-			{ name: "Product manager", id: 3 },
-			{ name: "Senior front-end developer", id: 4 }
-		],
+		 
 		container.appendChild(this.appElement);	
 	}
 
@@ -110,22 +109,37 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				this.dragboxObj.push(this.StockDragboxObj);	
 			}
 		}
-		//}
 		
-		//this._container.appendChild(this.appElement);	
+		this.onLoadView(this.dragboxObj);
 		
-		this.vue = new Vue({ el: this.appElement, render: (h) => h(App, { props: { DragBoxObj: this.dragboxObj, lastBoxName: "Allocation" ,Countries:this.y} }), });
-
-		// this.labelElement = document.createElement("div");
-		// 	this.labelElement.innerHTML = "Aditya";
-
-		// this.mydivContainer = document.createElement("div");
-		// this.labelElement.innerHTML = "Aditya";
-		// this.mydivContainer.appendChild(this.labelElement);
-		// this.theContainer.appendChild(this.mydivContainer);
-
 	}
-
+	async onLoadView(dragboxObj:DragBox[]): Promise<void> {
+		let cdsService= new CdsService(this._context);		
+		let fetchXml ='<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">'+
+							'<entity name="vel_country">'+
+							'<attribute name="vel_countryid" />'+
+							'<attribute name="vel_name" />'+							
+							'<order attribute="vel_name" descending="false" />'+
+							'<filter type="and">'+
+								'<condition attribute="statecode" operator="eq" value="0" />'+
+							'</filter>'+
+							'</entity>'+
+	   					'</fetch>';
+		let fetchQuery = "?fetchXml=" + encodeURIComponent(fetchXml);
+		const existingRecords=await cdsService.getCountries("vel_country", fetchQuery)
+		
+		// Retrieve multiple completed successfully -- 
+		for (let i = 0; i < existingRecords.entities.length; i++) {
+			this.tempcountry=new Country();
+			this.tempcountry.id=existingRecords.entities[i].vel_countryid;
+			this.tempcountry.name=existingRecords.entities[i].vel_name;
+			this.CountryItems.push(this.tempcountry);	
+		}
+	  this.tempCountries=new Countries();
+	  this.tempCountries.items=this.CountryItems;
+	  this.ContryObj.push(this.tempCountries);
+	  this.vue = new Vue({ el: this.appElement, render: (h) => h(App, { props: { DragBoxObj: dragboxObj, lastBoxName: "Allocation" ,Countries:this.ContryObj} }), });
+	}
 	/**
 	 * It is called by the framework prior to a control receiving new data.
 	 * @returns an object based on nomenclature defined in manifest, expecting object[s] for property marked as “bound” or “output”

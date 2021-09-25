@@ -23,7 +23,8 @@ export class DropDownItem{
     value:string;
 }
 export class Countries{
-    items:Country[];
+    id:number;
+    items : Country[];
 }
 export class Country{
     id:string;

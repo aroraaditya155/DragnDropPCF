@@ -6,10 +6,12 @@
         <div class="p-2 alert alert-warning">
           <h3>{{ box.Name }}</h3>
           <div v-if="box.Name==='CUSTOMER'">
+            <div v-for="c in Countries" :key="c.id">
              <select class="form-control" @change="changeJobTitle($event)">
               <option value="" selected disabled>Choose</option>
-              <option v-for="Country in Countries" :value="Country.id" :key="Country.id">{{ Country.name }}</option>
+              <option v-for="Country in c.items" :value="Country.id" :key="Country.id">{{ Country.name }}</option>
             </select> 
+            </div>
           </div>
           <draggable class="list-group list-col1" v-model="box.items" :options="availableItemOptions">
             <div class="list-group-item" v-for="item in box.items" :key="item.name">
