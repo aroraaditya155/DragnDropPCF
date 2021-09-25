@@ -71,6 +71,11 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		// Add code to update control view
 		//let columnsOnView = this.getSortedColumnsOnView(context);
 		//this._container.innerHTML="";
+		this.OnLoadRender(context);
+		
+		
+	}
+	OnLoadRender(context: ComponentFramework.Context<IInputs>){
 		let tempCustomerItems: BoxRecord[] = [];
 		let tempStockItems: BoxRecord[] = [];		
 		this.dragboxObj = [];
@@ -79,9 +84,9 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				context.parameters.CustomerOpporunityProductDataSet?.sortedRecordIds.forEach((recordId)=>{
 					let currentRecord=context.parameters.CustomerOpporunityProductDataSet.records[recordId];		
 					let tempBoxItem = new BoxRecord();
-					tempBoxItem.name = currentRecord.getFormattedValue("vel_name");
-					tempBoxItem.property1 = currentRecord.getFormattedValue("vel_decimalfield")?.toString();
-					tempBoxItem.property2 = currentRecord.getFormattedValue("vel_integerfield")?.toString();
+					tempBoxItem.name = currentRecord.getFormattedValue("opportunityproductname");
+					tempBoxItem.property1 = currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.customerid");
+					tempBoxItem.property2 = currentRecord.getFormattedValue("quantity");
 					tempBoxItem.id =recordId;
 					tempCustomerItems.push(tempBoxItem);						
 				});
@@ -111,7 +116,6 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		}
 		
 		this.onLoadView(this.dragboxObj);
-		
 	}
 	async onLoadView(dragboxObj:DragBox[]): Promise<void> {
 		let cdsService= new CdsService(this._context);		
@@ -137,8 +141,52 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		}
 	  this.tempCountries=new Countries();
 	  this.tempCountries.items=this.CountryItems;
+	  this.ContryObj=[];
 	  this.ContryObj.push(this.tempCountries);
-	  this.vue = new Vue({ el: this.appElement, render: (h) => h(App, { props: { DragBoxObj: dragboxObj, lastBoxName: "Allocation" ,Countries:this.ContryObj} }), });
+	  this.vue = new Vue({
+		  	 el: this.appElement, 
+			render: (h) => h(App, { 
+				props: { 
+					DragBoxObj: dragboxObj, 
+					lastBoxName: "Allocation", 
+					Countries:this.ContryObj,
+					context:this.onBlure
+				} 
+			}), 
+		});
+	}
+	onBlure = (event:Event):void => {
+		
+		//alert("Hi"+(<HTMLSelectElement>event.target).value);		
+		let x=(<HTMLInputElement>event.target).value;
+		this._context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
+            var fieldName = "";
+			
+			// Option 1 using the property-set name directly
+			fieldName = "searchField";
+			
+			/* Option 2
+            this.contextObj.parameters.simpleTableGrid.columns.forEach(function (item) {
+                // SearchField is the property-set name on manifest
+                if (item.alias == "searchField") {
+                    fieldName = item.name;
+                }
+            }); 
+			*/
+            var condition = {
+                attributeName: fieldName,
+                conditionOperator: 6 /* Like */,
+                value: "%" + x + "%"
+            };
+            var conditionsArray = [];
+            conditionsArray.push(condition);
+			this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
+                conditions: conditionsArray,
+                filterOperator: 1 /* Or */
+            });
+            this._context.parameters.CustomerOpporunityProductDataSet.refresh();
+			this.vue.$forceUpdate();
+			//this.OnLoadRender(this._context);
 	}
 	/**
 	 * It is called by the framework prior to a control receiving new data.

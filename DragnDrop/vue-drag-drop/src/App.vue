@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-5">
     <div>
-      <drag-box :DragnDropBox="DragBoxObj" :lastBoxName="lastBoxName" :Countries="Countries"></drag-box>
+      <drag-box :DragnDropBox="DragBoxObj" :lastBoxName="lastBoxName" :Countries="Countries" :context="context"></drag-box>
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@ export default {
       DragBoxObj: [],
       lastBoxName:{type:String},
       Countries:[],
+      context: [],
   }
 };
 </script>

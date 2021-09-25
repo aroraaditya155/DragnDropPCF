@@ -1,7 +1,6 @@
 <template>
-  <div class="drag-drop-box">
-    <div class="row">
-     
+  <div class="drag-drop-box" v-if="renderComponent">
+    <div class="row">    
       <div class="col-md-3 drag-col1" v-for="box in DragnDropBox" :key="box.boxNumber">
         <div class="p-2 alert alert-warning">
           <h3>{{ box.Name }}</h3>
@@ -9,9 +8,11 @@
             <div v-for="c in Countries" :key="c.id">
              <select class="form-control" @change="changeCountry($event)">
               <option value="" selected disabled>Choose</option>
-              <option v-for="Country in c.items" :value="Country.id" :key="Country.id">{{ Country.name }}</option>
+              <option v-for="Country in c.items" :value="Country.name" :key="Country.id">{{ Country.name }}</option>
             </select> 
-            </div>
+             <input  v-on:blur="handleBlur($event)" placeholder="edit me">  
+            <button primary v-on:click="forceRerender()">Search</button>            
+            </div>           
           </div>
           <draggable class="list-group list-col1" v-model="box.items" :options="availableItemOptions">
             <div class="list-group-item" v-for="item in box.items" :key="item.name">
@@ -55,7 +56,6 @@
 
 <script>
 import draggable from "vuedraggable";
-
 export default {
   components: { draggable },
 
@@ -63,9 +63,11 @@ export default {
     DragnDropBox: [],
     lastBoxName: { type: String, required: true },
     Countries:[],
+    context: []
   },
    data() {
     return {
+      renderComponent: true,
       availableItemOptions: {
         group: {
           name: "items",
@@ -127,10 +129,23 @@ export default {
       this.clonedAllocationItems=[];
       this.clonedCustomerItems=[];
     },
-    changeCountry(){
-      alert("testing");
-        this.context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
-    }
+   changeCountry: function changeCountry(event) {
+     //this.context(event);
+      //alert( event.target.value);
+    },
+    handleBlur: function handleBlur  (event){
+     // this. DragnDropBox=[];
+      this.context(event);
+    },
+    forceRerender() {
+      // Remove my-component from the DOM
+      this.renderComponent = false;
+      this.renderComponent = true;
+      //this.$nextTick(() => {
+        // Add the component back in
+       // this.renderComponent = true;
+      //});
+    },
   },
  
 };

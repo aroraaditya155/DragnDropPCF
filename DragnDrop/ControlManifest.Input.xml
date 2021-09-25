@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="ManyToManyDragDrop" constructor="DragnDrop" version="0.0.19" display-name-key="DragnDrop" description-key="DragnDrop description" control-type="standard">
+  <control namespace="ManyToManyDragDrop" constructor="DragnDrop" version="0.0.35" display-name-key="DragnDrop" description-key="DragnDrop description" control-type="standard">
     <!-- dataset node represents a set of entity records on CDS; allow more than one datasets -->    
      <data-set name="StockOnHandDataSet" display-name-key="Dataset_Display_Key2">
       <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
@@ -12,6 +12,7 @@
       <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
       
       <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="Lookup.Simple" usage="bound" required="false" />
+      <property-set name="searchField" required="true" display-name-key="SearchField_Display_Key" description-key="SearchField_Description_Key" of-type="SingleLine.Text" usage="bound"  />
       
     </data-set>
     <resources>
