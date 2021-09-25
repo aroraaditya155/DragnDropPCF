@@ -7,7 +7,7 @@
           <h3>{{ box.Name }}</h3>
           <div v-if="box.Name==='CUSTOMER'">
             <div v-for="c in Countries" :key="c.id">
-             <select class="form-control" @change="changeJobTitle($event)">
+             <select class="form-control" @change="changeCountry($event)">
               <option value="" selected disabled>Choose</option>
               <option v-for="Country in c.items" :value="Country.id" :key="Country.id">{{ Country.name }}</option>
             </select> 
@@ -127,7 +127,10 @@ export default {
       this.clonedAllocationItems=[];
       this.clonedCustomerItems=[];
     },
-    
+    changeCountry(){
+      alert("testing");
+        this.context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
+    }
   },
  
 };
