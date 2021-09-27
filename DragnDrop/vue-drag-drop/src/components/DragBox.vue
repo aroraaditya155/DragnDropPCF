@@ -6,11 +6,11 @@
           <h3>{{ box.Name }}</h3>
           <div v-if="box.Name==='CUSTOMER'">
             <div v-for="c in Countries" :key="c.id">
-             <select class="form-control" @change="changeCountry($event)">
-              <option value="" selected disabled>Choose</option>
+             <select class="form-control" @change="changeCountry($event)" v-model="selectedCountryValue">
+              <option value="" selected disabled>Choose Country</option>
               <option v-for="Country in c.items" :value="Country.name" :key="Country.id">{{ Country.name }}</option>
             </select> 
-             <input  v-on:blur="handleBlur($event)" placeholder="edit me">  
+             <input  @change="handleChange($event)" placeholder="Product Name" v-model="productname">  
             <button primary v-on:click="forceRerender()">Search</button>            
             </div>           
           </div>
@@ -25,7 +25,7 @@
       </div>
       <div class="col-md-3 drag-col2">
         <div class="p-2 alert alert-success">
-          <h3>{{ lastBoxName }}</h3>
+          <h3>{{ LastBoxName }}</h3>
           <div>
             <h4>Customer</h4>
             <draggable class="list-group list-col2" v-model="clonedCustomerItems" :options="clonedCustomerItemOptions" @change="onChangeCustomer">
@@ -61,13 +61,17 @@ export default {
 
   props: {
     DragnDropBox: [],
-    lastBoxName: { type: String, required: true },
+    LastBoxName: { type: String, required: true },
     Countries:[],
-    context: []
+    OnChange: [],
+    OnChangeCountry: [],
+    OnClickSearch: []
   },
    data() {
     return {
       renderComponent: true,
+      selectedCountryValue:"",
+      productname:"",
       availableItemOptions: {
         group: {
           name: "items",
@@ -130,21 +134,27 @@ export default {
       this.clonedCustomerItems=[];
     },
    changeCountry: function changeCountry(event) {
-     //this.context(event);
+      //this.OnChangeCountry(event,this.productname);
       //alert( event.target.value);
     },
-    handleBlur: function handleBlur  (event){
+    handleChange: function handleChange(event){
      // this. DragnDropBox=[];
-      this.context(event);
+      //this.OnChange(event,this.selectedCountryValue);
+      
+    
     },
-    forceRerender() {
+    forceRerender() {alert(this.productname);
+      let x=this.productname;
+      let y=this.selectedCountryValue;
+      this.OnClickSearch(this.productname,this.selectedCountryValue);
       // Remove my-component from the DOM
       this.renderComponent = false;
-      this.renderComponent = true;
-      //this.$nextTick(() => {
+      this.$nextTick(() => {
         // Add the component back in
-       // this.renderComponent = true;
-      //});
+        this.renderComponent = true;
+        this.productname=x;
+        this.selectedCountryValue=y;
+      }); 
     },
   },
  

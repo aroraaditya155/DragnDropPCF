@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-5">
     <div>
-      <drag-box :DragnDropBox="DragBoxObj" :lastBoxName="lastBoxName" :Countries="Countries" :context="context"></drag-box>
+      <drag-box :DragnDropBox="DragBoxObj" :LastBoxName="LastBoxName" :Countries="Countries" :OnChange="OnChange" :OnChangeCountry="OnChangeCountry" :OnClickSearch="OnClickSearch"></drag-box>
     </div>
   </div>
 </template>
@@ -16,9 +16,11 @@ export default {
   },
   props:{
       DragBoxObj: [],
-      lastBoxName:{type:String},
+      LastBoxName:{type:String},
       Countries:[],
-      context: [],
+      OnChange: [],
+      OnChangeCountry: [],
+      OnClickSearch: []
   }
 };
 </script>

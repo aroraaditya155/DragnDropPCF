@@ -13,6 +13,8 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 	private mainContainer: HTMLDivElement;
 	y: { name: string; id: number; }[];
 	private _context: any;
+	productName: string;
+	countryName: string;
 	/**
 	 * Empty constructor.
 	 */
@@ -114,9 +116,39 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				this.dragboxObj.push(this.StockDragboxObj);	
 			}
 		}
+		if(!context.parameters.CountryDataSet.loading){
+			//if(context.parameters.StockDataSet){
+			this.CountryItems=[];
+			context.parameters.CountryDataSet?.sortedRecordIds.forEach((recordId)=>{
+				let currentRecord=context.parameters.CountryDataSet.records[recordId];	
+				this.tempcountry=new Country();
+				this.tempcountry.id=currentRecord.getFormattedValue("vel_name");
+				this.tempcountry.name=currentRecord.getFormattedValue("vel_name");
+				this.CountryItems.push(this.tempcountry);			
+			});
+				
+			if(context.parameters.CountryDataSet.sortedRecordIds.length>0){
+				this.tempCountries=new Countries();
+				this.tempCountries.items=this.CountryItems;
+				this.ContryObj=[];
+				this.ContryObj.push(this.tempCountries);
+			}
+		}
 		
-		this.onLoadView(this.dragboxObj);
-	}
+		this.vue = new Vue({
+			el: this.appElement, 
+		 render: (h) => h(App, { 
+			 props: { 
+				 DragBoxObj: this.dragboxObj, 
+				 LastBoxName: "Allocation", 
+				 Countries:this.ContryObj,
+				 OnChange:this.OnChange,
+				 OnChangeCountry:this.OnChangeCountry,
+				 OnClickSearch:this.OnClickSearch,
+			 } 
+		 	}), 
+	 	});
+	}/*
 	async onLoadView(dragboxObj:DragBox[]): Promise<void> {
 		let cdsService= new CdsService(this._context);		
 		let fetchXml ='<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">'+
@@ -154,16 +186,16 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				} 
 			}), 
 		});
-	}
-	onBlure = (event:Event):void => {
+	} */
+	OnChange = (event:Event,selectedCountryValue:string):void => {
 		
 		//alert("Hi"+(<HTMLSelectElement>event.target).value);		
-		let x=(<HTMLInputElement>event.target).value;
+		this.productName=(<HTMLInputElement>event.target).value;
 		this._context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
-            var fieldName = "";
+            let fieldName = "";
 			
 			// Option 1 using the property-set name directly
-			fieldName = "searchField";
+			fieldName = "searchProductNameField";
 			
 			/* Option 2
             this.contextObj.parameters.simpleTableGrid.columns.forEach(function (item) {
@@ -173,20 +205,102 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
                 }
             }); 
 			*/
-            var condition = {
+			let conditionsArray = [];           
+            let condition1 = {
                 attributeName: fieldName,
                 conditionOperator: 6 /* Like */,
-                value: "%" + x + "%"
+                value: "%" + this.productName + "%"
             };
-            var conditionsArray = [];
-            conditionsArray.push(condition);
+			conditionsArray.push(condition1);
+			if(selectedCountryValue !== undefined && selectedCountryValue !==null && selectedCountryValue !==""){
+				fieldName = "searchCountryField";
+				let condition2 = {
+					attributeName: fieldName,
+					conditionOperator: 6 /* Like */,
+					value: "%" + selectedCountryValue+ "%"
+				};
+				conditionsArray.push(condition2);
+			}	
+           
 			this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
                 conditions: conditionsArray,
                 filterOperator: 1 /* Or */
             });
             this._context.parameters.CustomerOpporunityProductDataSet.refresh();
-			this.vue.$forceUpdate();
+			
 			//this.OnLoadRender(this._context);
+	}
+
+	OnChangeCountry = (event:Event,productname:string):void => {
+		this.countryName=(<HTMLSelectElement>event.target).value;
+		
+			
+	
+		this._context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
+		let fieldName = "";
+			
+			// Option 1 using the property-set name directly
+			fieldName = "searchCountryField";
+			
+			/* Option 2
+            this.contextObj.parameters.simpleTableGrid.columns.forEach(function (item) {
+                // SearchField is the property-set name on manifest
+                if (item.alias == "searchField") {
+                    fieldName = item.name;
+                }
+            }); 
+			*/
+			let conditionsArray = [];
+            let condition1 = {
+                attributeName: fieldName,
+                conditionOperator: 6 /* Like */,
+                value: "%" + this.countryName + "%"
+            };
+			conditionsArray.push(condition1);
+			if(productname !== undefined && productname !==null && productname !==""){
+				fieldName = "searchProductNameField";
+				let condition2 = {
+					attributeName: fieldName,
+					conditionOperator: 6 /* Like */,
+					value: "%" + productname+ "%"
+				};
+				conditionsArray.push(condition2);
+			}	
+			this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
+                conditions: conditionsArray,
+                filterOperator: 1 /* Or */
+            });
+            this._context.parameters.CustomerOpporunityProductDataSet.refresh();
+		
+	}
+	OnClickSearch=(productName:string,selectedCountryValue:string):void=>{
+		this._context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
+		let fieldName = "";	
+		let conditionsArray = [];		
+		// Option 1 using the property-set name directly
+		if(selectedCountryValue !== undefined && selectedCountryValue !==null && selectedCountryValue !==""){
+			fieldName = "searchCountryField";
+			let condition1 = {
+				attributeName: fieldName,
+				conditionOperator: 6 /* Like */,
+				value: "%" + selectedCountryValue+ "%"
+			};
+			conditionsArray.push(condition1);
+		}	
+		if(productName !== undefined && productName !==null && productName !==""){
+			fieldName = "searchProductNameField";
+			let condition2 = {
+				attributeName: fieldName,
+				conditionOperator: 6 /* Like */,
+				value: "%" + productName+ "%"
+			};
+			conditionsArray.push(condition2);
+		}	
+		this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
+			conditions: conditionsArray,
+			filterOperator: 1 /* Or */
+		});
+		this._context.parameters.CustomerOpporunityProductDataSet.refresh();
 	}
 	/**
 	 * It is called by the framework prior to a control receiving new data.
