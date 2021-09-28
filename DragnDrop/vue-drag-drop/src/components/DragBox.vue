@@ -5,20 +5,64 @@
         <div class="p-2 alert alert-warning">
           <h3>{{ box.Name }}</h3>
           <div v-if="box.Name==='CUSTOMER'">
+            <!-- Country -->
             <div v-for="c in Countries" :key="c.id">
              <select class="form-control" @change="changeCountry($event)" v-model="selectedCountryValue">
               <option value="" selected disabled>Choose Country</option>
               <option v-for="Country in c.items" :value="Country.name" :key="Country.id">{{ Country.name }}</option>
             </select> 
-             <input  @change="handleChange($event)" placeholder="Product Name" v-model="productname">  
+            </div>
+            <!-- end country -->
+            <!-- Customer -->
+           <!-- <div v-for="c in Customers" :key="c.id">
+             <select class="form-control" @change="changeCustomer($event)" v-model="selectedCustomerValue">
+              <option value="" selected disabled>Choose Customer</option>
+              <option v-for="Customer in c.items" :value="Customer.id" :key="Customer.id">{{ Customer.name }}</option>
+            </select> 
+            </div> -->
+            <!-- end Customer -->
+            <!-- Grade -->
+            <!-- <div v-for="g in Grades" :key="g.id">
+             <select class="form-control" @change="changeGrade($event)" v-model="selectedGradeValue">
+              <option value="" selected disabled>Choose Grade</option>
+              <option v-for="Grade in g.items" :value="Grade.id" :key="Grade.id">{{ Grade.name }}</option>
+            </select> 
+            </div> -->
+            <!-- end Grade -->
+            <!-- Commodity -->
+            <!-- <div v-for="c in Commodities" :key="c.id">
+             <select class="form-control" @change="changeCommodity($event)" v-model="selectedCommodityValue">
+              <option value="" selected disabled>Choose Commodity</option>
+              <option v-for="Commodity in c.items" :value="Commodity.id" :key="Commodity.id">{{ Commodity.name }}</option>
+            </select> 
+            </div> -->
+            <!-- end Commodity -->
+             <!-- Season -->
+            <div v-for="s in Seasons" :key="s.id">
+             <select class="form-control" @change="changeSeason($event)" v-model="selectedSeasonValue">
+              <option value="" selected disabled>Choose Season</option>
+              <option v-for="Season in s.items" :value="Season.name" :key="Season.id">{{ Season.name }}</option>
+            </select>  
             <button primary v-on:click="forceRerender()">Search</button>            
-            </div>           
+            </div> 
+             <!-- end Season -->          
           </div>
           <draggable class="list-group list-col1" v-model="box.items" :options="availableItemOptions">
             <div class="list-group-item" v-for="item in box.items" :key="item.name">
-              <p>{{ item.name }}</p>
-              <p>Qty - {{ item.property1 }}</p>
-              <p>Product - {{ item.property2 }}</p>
+              <div v-if="box.Name==='CUSTOMER'">
+              <p>Drag to select>></p>
+              <p>{{ item.customerName }} &nbsp;Season:{{item.season}} </p>            
+              <p>Sales Agreement: - {{item.salesAgreement}}&nbsp;Product Name:{{item.productName}}</p>
+              <p>Commodity:{{item.commodity}}&nbsp;Grade:{{item.grade}}&nbsp;Allocated Mts:{{item.allocatedMts}}</p>              
+              <p>Country:{{item.country}}</p> 
+              </div> 
+              <div v-if="box.Name!=='CUSTOMER'"> 
+              <p>Drag to allocation>></p>
+              <p>Batch:{{item.batch}}  </p>            
+              <p>Product:{{item.productName}}&nbsp;Quality:{{item.quality}}</p>
+              <p>Quantity:{{item.quantity}}&nbsp;Location:{{item.warehouseLocation}}</p>   
+              <p>Warehouse:{{item.warehouse}}</p>          
+              </div>
             </div>
           </draggable>
         </div>
@@ -30,9 +74,12 @@
             <h4>Customer</h4>
             <draggable class="list-group list-col2" v-model="clonedCustomerItems" :options="clonedCustomerItemOptions" @change="onChangeCustomer">
               <div class="list-group-item" v-for="item in clonedCustomerItems" :key="item.name">
-                <p>{{ item.name }}</p>
-                <p>Qty - {{ item.property1 }}</p>
-                <p>Product - {{ item.property2 }}</p>
+              <div v-if="item.type ==='customer'">                 
+                <p>{{ item.customerName }} &nbsp;Season:{{item.season}} </p>            
+                <p>Sales Agreement: - {{item.salesAgreement}}&nbsp;Product Name:{{item.productName}}</p>
+                <p>Commodity:{{item.commodity}}&nbsp;Grade:{{item.grade}}&nbsp;Allocated Mts:{{item.allocatedMts}}</p>              
+                <p>Country:{{item.country}}</p> 
+              </div>
               </div>
             </draggable>
           </div>
@@ -40,9 +87,12 @@
             <h4>Allocation</h4>
             <draggable class="list-group list-col2" v-model="clonedAllocationItems" :options="clonedItemAllocationOptions" @change="onChangeAllocation">
               <div class="list-group-item" v-for="item in clonedAllocationItems" :key="item.name">
-                <p>{{ item.name }}</p>
-                <p>Qty - {{ item.property1 }}</p>
-                <p>Product - {{ item.property2 }}</p>
+                <div v-if="item.type ==='stock'">
+                <p>Batch:{{item.batch}}  </p>            
+                <p>Product:{{item.productName}}&nbsp;Quality:{{item.quality}}</p>
+                <p>Quantity:{{item.quantity}}&nbsp;Location:{{item.warehouseLocation}}</p>   
+                <p>Warehouse:{{item.warehouse}}</p>   
+                 </div>
               </div>
             </draggable>
           </div>
@@ -63,15 +113,22 @@ export default {
     DragnDropBox: [],
     LastBoxName: { type: String, required: true },
     Countries:[],
-    OnChange: [],
-    OnChangeCountry: [],
+    Seasons:[],
+    Grades:[],
+		Commodities:[],
+    Customers:[],
+    //OnChange: [],
+    //OnChangeCountry: [],
     OnClickSearch: []
   },
    data() {
     return {
       renderComponent: true,
       selectedCountryValue:"",
-      productname:"",
+      selectedSeasonValue:"",
+      selectedGradeValue:"",
+      selectedCommodityValue:"",
+      selectedCustomerValue:"",     
       availableItemOptions: {
         group: {
           name: "items",
@@ -93,14 +150,26 @@ export default {
   },
   methods: {
     onChangeCustomer() {     
+      let filtered=[];
+      filtered = this.clonedCustomerItems.filter(function(e){ 
+        return e.type==="customer";
+      }); 
       if (this.clonedCustomerItems.length > 1) {
         this.clonedCustomerItems.pop();
       }
+      
+      this.clonedCustomerItems=filtered;
+      //this.clonedCustomerItems.push(filtered);
     },
-     onChangeAllocation() {     
+     onChangeAllocation() {   
+      let filtered=[];
+      filtered = this.clonedAllocationItems.filter(function(e){ 
+        return e.type==="stock";
+      });   
       if (this.clonedAllocationItems.length > 1) {
         this.clonedAllocationItems.pop();
       }
+      this.clonedAllocationItems=filtered;
     },
     saveClick() {      
       let entityFormOptions = {};
@@ -132,28 +201,35 @@ export default {
     ResetClick(){
       this.clonedAllocationItems=[];
       this.clonedCustomerItems=[];
+      this.selectedCountryValue="";
+      this.selectedSeasonValue="";
+      this.selectedGradeValue="";
+      this.selectedCommodityValue="";
+      this.selectedCustomerValue="";
     },
    changeCountry: function changeCountry(event) {
       //this.OnChangeCountry(event,this.productname);
       //alert( event.target.value);
     },
-    handleChange: function handleChange(event){
-     // this. DragnDropBox=[];
-      //this.OnChange(event,this.selectedCountryValue);
-      
-    
+    changeGrade: function changeGrade(event){
+
     },
-    forceRerender() {alert(this.productname);
-      let x=this.productname;
-      let y=this.selectedCountryValue;
-      this.OnClickSearch(this.productname,this.selectedCountryValue);
+    changeCommodity: function changeCommodity(event){
+
+    },
+    changeSeason: function changeSeason(event){
+
+    },
+    changeCustomer: function changeCustomer(event){
+
+    },
+    forceRerender() {
+      this.OnClickSearch(this.selectedCountryValue,this.selectedSeasonValue,this.selectedGradeValue,this.selectedCommodityValue,this.selectedCustomerValue);
       // Remove my-component from the DOM
       this.renderComponent = false;
       this.$nextTick(() => {
         // Add the component back in
-        this.renderComponent = true;
-        this.productname=x;
-        this.selectedCountryValue=y;
+       this.renderComponent = true;
       }); 
     },
   },

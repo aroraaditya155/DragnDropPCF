@@ -1,7 +1,7 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import Vue from 'vue';
 import App from './vue-drag-drop/src/App.vue';
-import { DragBox, DropDownItem,Countries,Country } from "./DragBox";
+import { DragBox, DropDownItem,Countries,Country, Season, Seasons, Grade, Grades, Commodity, Commodities, Customer, Customers } from "./DragBox";
 import { BoxRecord } from "./DragBox";
 import { Filters } from "./DragBox";
 import { CdsService } from "./CdsService";
@@ -33,6 +33,25 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 	public CountryItems:Country[]=[];
 	public tempCountries:Countries;
 	public ContryObj:Countries[]=[];
+	public tempSeason:Season;
+	public SeasonItems:Season[]=[];
+	public tempSeasons:Seasons;
+	public SeasonObj:Seasons[]=[];
+	//....................
+	public tempGrade:Grade;
+	public GradeItems:Grade[]=[];
+	public tempGrades:Grades;
+	public GradeObj:Grades[]=[];
+	//....................
+	public tempCommodity:Commodity;
+	public CommodityItems:Commodity[]=[];
+	public tempCommodities:Commodities;
+	public CommodityObj:Commodities[]=[];
+	//....................
+	public tempCustomer:Customer;
+	public CustomerItems:Customer[]=[];
+	public tempCustomers:Customers;
+	public CustomerObj:Customers[]=[];
 	/**
 	 * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
 	 * Data-set values are not initialized here, use updateView.
@@ -86,9 +105,15 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				context.parameters.CustomerOpporunityProductDataSet?.sortedRecordIds.forEach((recordId)=>{
 					let currentRecord=context.parameters.CustomerOpporunityProductDataSet.records[recordId];		
 					let tempBoxItem = new BoxRecord();
-					tempBoxItem.name = currentRecord.getFormattedValue("opportunityproductname");
-					tempBoxItem.property1 = currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.customerid");
-					tempBoxItem.property2 = currentRecord.getFormattedValue("quantity");
+					tempBoxItem.productName = currentRecord.getFormattedValue("opportunityproductname");
+					tempBoxItem.allocatedMts =currentRecord.getFormattedValue("vel_allocatedmts");
+					tempBoxItem.customerName = currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.customerid");
+					tempBoxItem.grade = currentRecord.getFormattedValue("vel_grade");
+					tempBoxItem.salesAgreement="";
+					tempBoxItem.commodity=currentRecord.getFormattedValue("vel_productcategory");
+					tempBoxItem.season=currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.vel_season");
+					tempBoxItem.type="customer";
+					tempBoxItem.country=currentRecord.getFormattedValue("vel_country");
 					tempBoxItem.id =recordId;
 					tempCustomerItems.push(tempBoxItem);						
 				});
@@ -104,9 +129,13 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 			context.parameters.StockOnHandDataSet?.sortedRecordIds.forEach((recordId)=>{
 				let currentRecord=context.parameters.StockOnHandDataSet.records[recordId];		
 				let tempBoxItem = new BoxRecord();
-				tempBoxItem.name = currentRecord.getFormattedValue("vel_name");
-				tempBoxItem.property1 ="";
-				tempBoxItem.property2 = "";
+				tempBoxItem.productName = currentRecord.getFormattedValue("vel_name");
+				tempBoxItem.warehouseLocation =currentRecord.getFormattedValue("vel_warehouselocation");
+				tempBoxItem.warehouse =currentRecord.getFormattedValue("vel_warehouse");
+				tempBoxItem.quantity = currentRecord.getFormattedValue("vel_totalavailable");
+				tempBoxItem.quality= currentRecord.getFormattedValue("vel_grade");
+				tempBoxItem.batch= currentRecord.getFormattedValue("vel_batchattribute");
+				tempBoxItem.type="stock";
 				tempBoxItem.id =recordId;
 				tempStockItems.push(tempBoxItem);			
 			});
@@ -134,6 +163,88 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				this.ContryObj.push(this.tempCountries);
 			}
 		}
+		if(!context.parameters.SeasonDataSet.loading){
+			//if(context.parameters.StockDataSet){
+			this.SeasonItems=[];
+			context.parameters.SeasonDataSet?.sortedRecordIds.forEach((recordId)=>{
+				let currentRecord=context.parameters.SeasonDataSet.records[recordId];	
+				this.tempSeason=new Season();
+				this.tempSeason.id=currentRecord.getFormattedValue("vel_name");
+				this.tempSeason.name=currentRecord.getFormattedValue("vel_name");
+				//..........if required
+				this.tempSeason.current=currentRecord.getFormattedValue("vel_current");
+				this.SeasonItems.push(this.tempSeason);			
+			});
+				
+			if(context.parameters.SeasonDataSet.sortedRecordIds.length>0){
+				this.tempSeasons=new Seasons();
+				this.tempSeasons.items=this.SeasonItems;
+				this.SeasonObj=[];
+				this.SeasonObj.push(this.tempSeasons);
+			}
+		}
+		//...........Commodity....
+		if(!context.parameters.CommodityDataSet.loading){
+			//if(context.parameters.StockDataSet){
+			this.CommodityItems=[];
+			context.parameters.CommodityDataSet?.sortedRecordIds.forEach((recordId)=>{
+				let currentRecord=context.parameters.CommodityDataSet.records[recordId];	
+				this.tempCommodity=new Commodity();
+				this.tempCommodity.id=recordId;
+				this.tempCommodity.name=currentRecord.getFormattedValue("vel_name");			
+				this.CommodityItems.push(this.tempCommodity);			
+			});
+				
+			if(context.parameters.CommodityDataSet.sortedRecordIds.length>0){
+				this.tempCommodities=new Commodities();
+				this.tempCommodities.items=this.CommodityItems;
+				this.CommodityObj=[];
+				this.CommodityObj.push(this.tempCommodities);
+			}
+		}
+		//...........Grade....
+		if(!context.parameters.GradeDataSet.loading){
+			//if(context.parameters.StockDataSet){
+			this.GradeItems=[];
+			context.parameters.GradeDataSet?.sortedRecordIds.forEach((recordId)=>{
+				let currentRecord=context.parameters.GradeDataSet.records[recordId];	
+				this.tempGrade=new Grade();
+				this.tempGrade.id=recordId;
+				this.tempGrade.name=currentRecord.getFormattedValue("vel_name");
+				//..........if required
+				//this.tempSeason.current=currentRecord.getFormattedValue("vel_current");
+				this.GradeItems.push(this.tempGrade);			
+			});
+				
+			if(context.parameters.GradeDataSet.sortedRecordIds.length>0){
+				this.tempGrades=new Grades();
+				this.tempGrades.items=this.GradeItems;
+				this.GradeObj=[];
+				this.GradeObj.push(this.tempGrades);
+			}
+			
+		}
+		//...........Customer....
+		if(!context.parameters.CustomerDataSet.loading){
+			//if(context.parameters.StockDataSet){
+			this.CustomerItems=[];
+			context.parameters.CustomerDataSet?.sortedRecordIds.forEach((recordId)=>{
+				let currentRecord=context.parameters.CustomerDataSet.records[recordId];	
+				this.tempCustomer=new Customer();
+				this.tempCustomer.id=recordId;
+				this.tempCustomer.name=currentRecord.getFormattedValue("name");
+				//..........if required
+				//this.tempSeason.current=currentRecord.getFormattedValue("vel_current");
+				this.CustomerItems.push(this.tempCustomer);			
+			});
+				
+			if(context.parameters.CustomerDataSet.sortedRecordIds.length>0){
+				this.tempCustomers=new Grades();
+				this.tempCustomers.items=this.CustomerItems;
+				this.CustomerObj=[];
+				this.CustomerObj.push(this.tempCustomers);
+			}
+		}
 		
 		this.vue = new Vue({
 			el: this.appElement, 
@@ -142,8 +253,12 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				 DragBoxObj: this.dragboxObj, 
 				 LastBoxName: "Allocation", 
 				 Countries:this.ContryObj,
-				 OnChange:this.OnChange,
-				 OnChangeCountry:this.OnChangeCountry,
+				 Seasons:this.SeasonObj,
+				 Grades:this.GradeObj,
+				 Commodities:this.CommodityObj,
+				 Customers:this.CustomerObj,
+				 //OnChange:this.OnChange,
+				 //OnChangeCountry:this.OnChangeCountry,
 				 OnClickSearch:this.OnClickSearch,
 			 } 
 		 	}), 
@@ -187,6 +302,9 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 			}), 
 		});
 	} */
+
+	// This Method is not using
+	/*
 	OnChange = (event:Event,selectedCountryValue:string):void => {
 		
 		//alert("Hi"+(<HTMLSelectElement>event.target).value);		
@@ -194,21 +312,14 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		this._context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
             let fieldName = "";
 			
-			// Option 1 using the property-set name directly
+			
 			fieldName = "searchProductNameField";
 			
-			/* Option 2
-            this.contextObj.parameters.simpleTableGrid.columns.forEach(function (item) {
-                // SearchField is the property-set name on manifest
-                if (item.alias == "searchField") {
-                    fieldName = item.name;
-                }
-            }); 
-			*/
+			
 			let conditionsArray = [];           
             let condition1 = {
                 attributeName: fieldName,
-                conditionOperator: 6 /* Like */,
+                conditionOperator: 6 ,
                 value: "%" + this.productName + "%"
             };
 			conditionsArray.push(condition1);
@@ -216,7 +327,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				fieldName = "searchCountryField";
 				let condition2 = {
 					attributeName: fieldName,
-					conditionOperator: 6 /* Like */,
+					conditionOperator: 6 ,
 					value: "%" + selectedCountryValue+ "%"
 				};
 				conditionsArray.push(condition2);
@@ -224,36 +335,26 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
            
 			this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
                 conditions: conditionsArray,
-                filterOperator: 1 /* Or */
+                filterOperator: 1 
             });
             this._context.parameters.CustomerOpporunityProductDataSet.refresh();
 			
 			//this.OnLoadRender(this._context);
 	}
-
+	*/
+	// This Method is not using
+	/*
 	OnChangeCountry = (event:Event,productname:string):void => {
 		this.countryName=(<HTMLSelectElement>event.target).value;
-		
-			
-	
 		this._context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
-		let fieldName = "";
+		let fieldName = "";			
 			
-			// Option 1 using the property-set name directly
-			fieldName = "searchCountryField";
+			fieldName = "searchCountryField";			
 			
-			/* Option 2
-            this.contextObj.parameters.simpleTableGrid.columns.forEach(function (item) {
-                // SearchField is the property-set name on manifest
-                if (item.alias == "searchField") {
-                    fieldName = item.name;
-                }
-            }); 
-			*/
 			let conditionsArray = [];
             let condition1 = {
                 attributeName: fieldName,
-                conditionOperator: 6 /* Like */,
+                conditionOperator: 6 ,
                 value: "%" + this.countryName + "%"
             };
 			conditionsArray.push(condition1);
@@ -261,19 +362,19 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				fieldName = "searchProductNameField";
 				let condition2 = {
 					attributeName: fieldName,
-					conditionOperator: 6 /* Like */,
+					conditionOperator: 6 ,
 					value: "%" + productname+ "%"
 				};
 				conditionsArray.push(condition2);
 			}	
 			this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
                 conditions: conditionsArray,
-                filterOperator: 1 /* Or */
+                filterOperator: 1 
             });
             this._context.parameters.CustomerOpporunityProductDataSet.refresh();
 		
-	}
-	OnClickSearch=(productName:string,selectedCountryValue:string):void=>{
+	} */
+	OnClickSearch=(selectedCountryValue:string,selectedSeasonValue:string,selectedGradeValue:string,selectedCommodityValue:string,selectedCustomerValue:string):void=>{
 		this._context.parameters.CustomerOpporunityProductDataSet.filtering.clearFilter();
 		let fieldName = "";	
 		let conditionsArray = [];		
@@ -287,14 +388,42 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 			};
 			conditionsArray.push(condition1);
 		}	
-		if(productName !== undefined && productName !==null && productName !==""){
-			fieldName = "searchProductNameField";
+		if(selectedCustomerValue !== undefined && selectedCustomerValue !==null && selectedCustomerValue !==""){
+			fieldName = "searchCustomerField";
 			let condition2 = {
 				attributeName: fieldName,
-				conditionOperator: 6 /* Like */,
-				value: "%" + productName+ "%"
+				conditionOperator: 0 /* Like */,
+				value: selectedCustomerValue
 			};
 			conditionsArray.push(condition2);
+		}	
+		if(selectedSeasonValue !== undefined && selectedSeasonValue !==null && selectedSeasonValue !==""){
+			fieldName = "searchSeasonField";
+			let condition3 = {
+				attributeName: fieldName,
+				conditionOperator: 6 /* Like */,
+				value: "%" + selectedSeasonValue+ "%"
+			};
+			conditionsArray.push(condition3);
+		}
+		//............	
+		if(selectedGradeValue !== undefined && selectedGradeValue !==null && selectedGradeValue !==""){
+			fieldName = "searchGradeField";
+			let condition4 = {
+				attributeName: fieldName,
+				conditionOperator: 0 /* Like */,
+				value: selectedGradeValue
+			};
+			conditionsArray.push(condition4);
+		}	
+		if(selectedCommodityValue !== undefined && selectedCommodityValue !==null && selectedCommodityValue !==""){
+			fieldName = "searchCommodityField";
+			let condition5 = {
+				attributeName: fieldName,
+				conditionOperator: 0 /* Like */,
+				value: selectedCommodityValue
+			};
+			conditionsArray.push(condition5);
 		}	
 		this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
 			conditions: conditionsArray,

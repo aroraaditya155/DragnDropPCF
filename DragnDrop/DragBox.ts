@@ -7,10 +7,22 @@ export class DragBox{
 
 }
 export class BoxRecord{
-    name: string;
-    property1: string;
-    property2:string;
     id:string;
+    name: string;
+    productName:string;
+    customerName:string;
+    salesAgreement:string;
+    grade:string;
+    allocatedMts:string;
+    type:string;
+    batch:string;
+    quality:string;
+    quantity:string;
+    warehouseLocation:string;
+    warehouse:string;
+    commodity:string;
+    season:string;
+    country:string;
    // id:string;
 }
 export class Filters{
@@ -27,6 +39,39 @@ export class Countries{
     items : Country[];
 }
 export class Country{
+    id:string;
+    name:string;
+}
+export class Grades{
+    id:number;
+    items : Grade[];
+}
+export class Grade{
+    id:string;
+    name:string;
+}
+export class Seasons{
+    id:number;
+    items : Season[];
+}
+export class Season{
+    id:string;
+    name:string;
+    current:string;
+}
+export class Commodities{
+    id:number;
+    items : Commodity[];
+}
+export class Commodity{
+    id:string;
+    name:string;
+}
+export class Customers{
+    id:number;
+    items : Customer[];
+}
+export class Customer{
     id:string;
     name:string;
 }

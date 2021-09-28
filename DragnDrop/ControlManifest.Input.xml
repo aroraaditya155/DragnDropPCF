@@ -1,22 +1,49 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="ManyToManyDragDrop" constructor="DragnDrop" version="0.0.62" display-name-key="DragnDrop" description-key="DragnDrop description" control-type="standard">
+  <control namespace="ManyToManyDragDrop" constructor="DragnDrop" version="0.0.88" display-name-key="DragnDrop" description-key="DragnDrop description" control-type="standard">
     <!-- dataset node represents a set of entity records on CDS; allow more than one datasets -->    
-     <data-set name="StockOnHandDataSet" display-name-key="Dataset_Display_Key2">
+     <data-set name="StockOnHandDataSet" display-name-key="StockOnHandDataset_Display_Key2">
       <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
       <!-- UNCOMMENT TO ADD PROPERTY-SET NODE
       <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
       -->
     </data-set>
-    <data-set name="CustomerOpporunityProductDataSet" display-name-key="Dataset_Display_Key1">      
+    <data-set name="CustomerOpporunityProductDataSet" display-name-key="CustomerOpporunityProductDataset_Display_Key1">      
       <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
       
       <!-- <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="Lookup.Simple" usage="bound" required="false" /> -->
-      <property-set name="searchProductNameField" required="true" display-name-key="SearchField_Display_Key" description-key="SearchField_Description_Key" of-type="SingleLine.Text" usage="bound"  />
-      <property-set name="searchCountryField" required="true" display-name-key="SearchField_Display_Key" description-key="SearchField_Description_Key" of-type="SingleLine.Text" usage="bound"  />
+      <property-set name="searchCustomerField" required="true" display-name-key="searchCustomerField_Display_Key" description-key="searchCustomerField_Description_Key" of-type="Lookup.Simple" usage="bound"  />
+      <property-set name="searchCountryField" required="true" display-name-key="searchCountryField_Display_Key" description-key="searchCountryField_Description_Key" of-type="SingleLine.Text" usage="bound"  />
+      <property-set name="searchSeasonField" required="true" display-name-key="searchSeasonField_Display_Key" description-key="searchSeasonField_Description_Key" of-type="SingleLine.Text" usage="bound"  />
+      <property-set name="searchGradeField" required="true" display-name-key="searchGradeField_Display_Key" description-key="searchGradeField_Description_Key" of-type="Lookup.Simple" usage="bound"  />
+      <property-set name="searchCommodityField" required="true" display-name-key="searchCommodityField_Display_Key" description-key="searchCommodityField_Description_Key" of-type="Lookup.Simple" usage="bound"  />
       
     </data-set>
-     <data-set name="CountryDataSet" display-name-key="Dataset_Display_Key3">
+     <data-set name="CountryDataSet" display-name-key="CountryDataset_Display_Key3">
+      <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
+      <!-- UNCOMMENT TO ADD PROPERTY-SET NODE
+      <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
+      -->
+    </data-set>
+    <data-set name="SeasonDataSet" display-name-key="SeasonDataset_Display_Key4">
+      <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
+      <!-- UNCOMMENT TO ADD PROPERTY-SET NODE
+      <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
+      -->
+    </data-set>
+    <data-set name="CommodityDataSet" display-name-key="CommodityDataset_Display_Key5">
+      <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
+      <!-- UNCOMMENT TO ADD PROPERTY-SET NODE
+      <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
+      -->
+    </data-set>
+    <data-set name="GradeDataSet" display-name-key="GradeDataset_Display_Key6">
+      <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
+      <!-- UNCOMMENT TO ADD PROPERTY-SET NODE
+      <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
+      -->
+    </data-set>
+    <data-set name="CustomerDataSet" display-name-key="CustomerDataset_Display_Key7">
       <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
       <!-- UNCOMMENT TO ADD PROPERTY-SET NODE
       <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
