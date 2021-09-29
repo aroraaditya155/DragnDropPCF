@@ -105,6 +105,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				context.parameters.CustomerOpporunityProductDataSet?.sortedRecordIds.forEach((recordId)=>{
 					let currentRecord=context.parameters.CustomerOpporunityProductDataSet.records[recordId];		
 					let tempBoxItem = new BoxRecord();
+					tempBoxItem.name=currentRecord.getFormattedValue("opportunityproductname");
 					tempBoxItem.productName = currentRecord.getFormattedValue("opportunityproductname");
 					tempBoxItem.allocatedMts =currentRecord.getFormattedValue("vel_allocatedmts");
 					tempBoxItem.customerName = currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.customerid");
@@ -129,6 +130,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 			context.parameters.StockOnHandDataSet?.sortedRecordIds.forEach((recordId)=>{
 				let currentRecord=context.parameters.StockOnHandDataSet.records[recordId];		
 				let tempBoxItem = new BoxRecord();
+				tempBoxItem.name= currentRecord.getFormattedValue("vel_name");
 				tempBoxItem.productName = currentRecord.getFormattedValue("vel_name");
 				tempBoxItem.warehouseLocation =currentRecord.getFormattedValue("vel_warehouselocation");
 				tempBoxItem.warehouse =currentRecord.getFormattedValue("vel_warehouse");
