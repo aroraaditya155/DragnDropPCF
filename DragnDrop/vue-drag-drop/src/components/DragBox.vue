@@ -4,7 +4,7 @@
       <div class="col-md-3 drag-col1" v-for="box in DragnDropBox" :key="box.boxNumber">
         <div class="p-2 alert alert-warning">
           <h3>{{ box.Name }}</h3>
-          <div v-if="box.Name==='CUSTOMER'">
+          <div v-if="box.Name==='Customer'">
             <!-- Country -->
             <div v-for="c in Countries" :key="c.id">
              <select class="form-control" @change="changeCountry($event)" v-model="selectedCountryValue">
@@ -49,19 +49,21 @@
           </div>
           <draggable class="list-group list-col1" v-model="box.items" :options="availableItemOptions">
             <div class="list-group-item" v-for="item in box.items" :key="item.name">
-              <div v-if="box.Name==='CUSTOMER'">
-              <p>Drag to select>></p>
-              <p>{{ item.customerName }} &nbsp;Season:{{item.season}} </p>            
-              <p>Sales Agreement: - {{item.salesAgreement}}&nbsp;Product Name:{{item.productName}}</p>
-              <p>Commodity:{{item.commodity}}&nbsp;Grade:{{item.grade}}&nbsp;Allocated Mts:{{item.allocatedMts}}</p>              
-              <p>Country:{{item.country}}</p> 
+              <div v-if="box.Name==='Customer'">
+              <p>Drag to select >></p>
+              <p><b>Customer:</b>&nbsp;{{ item.customerName }} </p>           
+              <p><b>Commodity:</b>&nbsp;{{item.commodity}}</p>
+              <p><b>Grade:</b>&nbsp;{{item.grade}}</p>
+              <p><b>Quantity Required:</b>&nbsp;{{item.allocatedAvailable}}</p> 
+              <p><b>Amount Reserved:</b>&nbsp;{{item.amountReserved}}</p>            
               </div> 
-              <div v-if="box.Name!=='CUSTOMER'"> 
-              <p>Drag to allocation>></p>
-              <p>Batch:{{item.batch}}  </p>            
-              <p>Product:{{item.productName}}&nbsp;Quality:{{item.quality}}</p>
-              <p>Quantity:{{item.quantity}}&nbsp;Location:{{item.warehouseLocation}}</p>   
-              <p>Warehouse:{{item.warehouse}}</p>          
+              <div v-if="box.Name!=='Customer'"> 
+              <p>Drag to allocation >></p>
+              <p><b>Batch Number:</b>&nbsp;{{item.batch}}  </p>            
+              <p><b>Commodity:</b>&nbsp;{{item.commodity}} </p>
+              <p><b>Grade:</b>&nbsp;{{item.grade}} </p>
+              <p><b>Available for Reservation:</b>&nbsp;{{item.allocatedAvailable}} </p>
+              <p><b>Amount Reserved:</b>&nbsp;{{item.amountReserved}} </p>
               </div>
             </div>
           </draggable>
@@ -75,23 +77,25 @@
             <draggable class="list-group list-col2" v-model="clonedCustomerItems" :options="clonedCustomerItemOptions" @change="onChangeCustomer">
               <div class="list-group-item" v-for="item in clonedCustomerItems" :key="item.name">
               <div v-if="item.type ==='customer'">                 
-                <p>{{ item.customerName }} &nbsp;Season:{{item.season}} </p>            
-                <p>Sales Agreement: - {{item.salesAgreement}}&nbsp;Product Name:{{item.productName}}</p>
-                <p>Commodity:{{item.commodity}}&nbsp;Grade:{{item.grade}}&nbsp;Allocated Mts:{{item.allocatedMts}}</p>              
-                <p>Country:{{item.country}}</p> 
+                <p><b>Customer:</b>&nbsp;{{ item.customerName }} </p>           
+              <p><b>Commodity:</b>&nbsp;{{item.commodity}}</p>
+              <p><b>Grade:</b>&nbsp;{{item.grade}}</p>
+              <p><b>Quantity Required:</b>&nbsp;{{item.allocatedAvailable}}</p> 
+              <p><b>Amount Reserved:</b>&nbsp;{{item.amountReserved}}</p>
               </div>
               </div>
             </draggable>
           </div>
           <div>
-            <h4>Allocation</h4>
+            <h4>Stock On Hand</h4>
             <draggable class="list-group list-col2" v-model="clonedAllocationItems" :options="clonedItemAllocationOptions" @change="onChangeAllocation">
               <div class="list-group-item" v-for="item in clonedAllocationItems" :key="item.name">
                 <div v-if="item.type ==='stock'">
-                <p>Batch:{{item.batch}}  </p>            
-                <p>Product:{{item.productName}}&nbsp;Quality:{{item.quality}}</p>
-                <p>Quantity:{{item.quantity}}&nbsp;Location:{{item.warehouseLocation}}</p>   
-                <p>Warehouse:{{item.warehouse}}</p>   
+                <p><b>Batch Number:</b>&nbsp;{{item.batch}}  </p>            
+              <p><b>Commodity:</b>&nbsp;{{item.productName}} </p>
+              <p><b>Grade:</b>&nbsp;{{item.grade}} </p>
+              <p><b>Available for Reservation:</b>&nbsp;{{item.allocatedAvailable}} </p>
+              <p><b>Amount Reserved:</b>&nbsp;{{item.amountReserved}} </p>  
                  </div>
               </div>
             </draggable>
@@ -238,70 +242,149 @@ export default {
 </script>
 
 <style>
-.drag-col1 {
-  min-height: 250px;
-  width: 25%;
-  float: left;
-  background-color: #fff3cd;
-  margin: 15px;
-  padding: 10px;
-  align-content: center;
-  align-items: center;
-  color: #856404;
+/* CSS styling for JT Johnson Stock On Hand PCF Control */
+/* Jady Mulqueeney */
+/* Version 0.4 - 1 Oct 2021 */
+
+.drag-drop-box {
+    width: auto;
+    height: auto;
 }
+
+.drag-col1,
 .drag-col2 {
-  min-height: 250px;
-  width: 25%;
-  float: left;
-  background-color: #d4edda;
-  margin: 15px;
-  padding: 10px;
-  align-content: center;
-  align-items: center;
-  color: #155724;
+    min-height: 75vh;
+    width: 28%;
+    float: left;
+    background-color: #f4f4f4;
+    border: 1px solid #CFCDCC;
+    margin: 15px;
+    padding: 10px;
+    align-content: center;
+    align-items: center;
+    color: #333;
 }
-.list-col1 {
-  min-height: 250px;
-  background-color: #fff3cd;
-  margin: 15px;
-  padding: 10px;
-  align-content: center;
-  align-items: center;
-}
+
+.list-col1,
 .list-col2 {
-  min-height: 250px;
-  background-color: #d4edda;
-  margin: 15px;
-  padding: 10px;
-  align-content: center;
-  align-items: center;
+    min-height: 150px;
+    background-color: #fff;
+    margin: 15px 0;
+    padding: 8px;
+    align-content: center;
+    align-items: center;
+    overflow-y: auto;
 }
+
+.drag-col1:first-of-type .list-col1 {
+    height: calc(65vh - 142px);
+}
+
+.drag-col1:nth-of-type(2) .list-col1 {
+    height: 65vh;
+}
+
+.list-col2 {
+    background-color: #fff;
+    height: calc((65vh / 2) - 52px);
+}
+
 .list-group-item {
-  background-color: #fff;
-  border-bottom: solid;
-  border-top-color: rgba(0, 0, 0, 0.125);
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-right-color: rgba(0, 0, 0, 0.125);
-  border-right-style: solid;
-  border-right-width: 1px;
-  border-bottom-color: rgba(0, 0, 0, 0.125);
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-left-color: rgba(0, 0, 0, 0.125);
-  border-left-style: solid;
-  border-left-width: 1px;
-  border-image-source: initial;
-  border-image-slice: initial;
-  border-image-width: initial;
-  border-image-outset: initial;
-  border-image-repeat: initial;
-  padding: 0.75rem 1.25rem;
+    background-color: #fff;
+    border: 2px dashed #cfc18f;
+    padding: 2px 8px 4px 8px;
+    margin-bottom: 8px;
+    position: relative;
 }
+
+.list-col2 .list-group-item {
+    border: 2px solid #0A701A;
+    padding-top: 6px;
+    margin-bottom: 8px;
+}
+
 h3 {
-  font-size: 1.75rem;
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-bottom: 12px;
+    color: #333;
 }
-p {
-  padding: 3px;
+
+.list-group-item p {
+    padding: 4px 0;
+    font-size: 13px;
+}
+
+.list-col1 .list-group-item p:nth-of-type(even) {
+    background-color: #f4f4f4;
+}
+
+.list-col1 .list-group-item p:nth-of-type(odd) {
+    background-color: #fff;
+}
+
+.list-col2 .list-group-item p:nth-of-type(even) {
+    background-color: #fff;
+}
+
+.list-col2 .list-group-item p:nth-of-type(odd) {
+    background-color: #f4f4f4;
+}
+
+.drag-col {
+    min-height: 300px;
+}
+
+.drag-drop-box select {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+}
+
+.drag-drop-box button {
+    outline: transparent;
+    position: relative;
+    font-size: 14px;
+    font-weight: 400;
+    border: 1px solid #0A701A;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    padding: 0px 16px;
+    border-radius: 2px;
+    min-width: 80px;
+    height: 32px;
+    background-color: #0A701A;
+    color: #fff;
+}
+
+.drag-drop-box button:hover {
+    background-color: #0a5416;
+    border-color: #0a5416;
+}
+
+.drag-col2 button:nth-of-type(2) {
+    background-color: #fff;
+    color: #333;
+    border-color: #333;
+}
+
+.drag-col2 button:nth-of-type(2):hover {
+    background-color: #f4f4f4;
+    color: #111;
+    border-color: #111;
+}
+
+.list-col1 .list-group-item p:first-of-type {
+    font-weight: 700;
+    text-align: right;
+    color: #0A701A;
+}
+
+.list-col2 .list-group-item p:first-of-type {
+    margin-top: 6px;
 }
 </style>

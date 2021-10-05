@@ -13,7 +13,8 @@ export class BoxRecord{
     customerName:string;
     salesAgreement:string;
     grade:string;
-    allocatedMts:string;
+    allocatedAvailable:string;
+    amountReserved:string;
     type:string;
     batch:string;
     quality:string;

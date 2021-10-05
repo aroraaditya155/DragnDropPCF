@@ -74,10 +74,10 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		let tempSupplierItems: BoxRecord[] ;
 		
 		this.CustomerDragboxObj = new DragBox();
-		this.CustomerDragboxObj.Name = "CUSTOMER";
+		this.CustomerDragboxObj.Name = "Customer";
 		this.CustomerDragboxObj.boxNumber =1;
 		this.StockDragboxObj = new DragBox();
-		this.StockDragboxObj.Name = "STOCK ON HAND";
+		this.StockDragboxObj.Name = "Stock On Hand";
 		this.StockDragboxObj.boxNumber =2;
 		 
 		container.appendChild(this.appElement);	
@@ -107,7 +107,8 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 					let tempBoxItem = new BoxRecord();
 					tempBoxItem.name=currentRecord.getFormattedValue("opportunityproductname");
 					tempBoxItem.productName = currentRecord.getFormattedValue("opportunityproductname");
-					tempBoxItem.allocatedMts =currentRecord.getFormattedValue("vel_allocatedmts");
+					tempBoxItem.allocatedAvailable =currentRecord.getFormattedValue("vel_availableforreservation");
+					tempBoxItem.amountReserved =currentRecord.getFormattedValue("vel_amountreserved");
 					tempBoxItem.customerName = currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.customerid");
 					tempBoxItem.grade = currentRecord.getFormattedValue("vel_grade");
 					tempBoxItem.salesAgreement="";
@@ -132,11 +133,13 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				let tempBoxItem = new BoxRecord();
 				tempBoxItem.name= currentRecord.getFormattedValue("vel_name");
 				tempBoxItem.productName = currentRecord.getFormattedValue("vel_name");
+				tempBoxItem.commodity=currentRecord.getFormattedValue("vel_productcategory");
 				tempBoxItem.warehouseLocation =currentRecord.getFormattedValue("vel_warehouselocation");
-				tempBoxItem.warehouse =currentRecord.getFormattedValue("vel_warehouse");
-				tempBoxItem.quantity = currentRecord.getFormattedValue("vel_totalavailable");
-				tempBoxItem.quality= currentRecord.getFormattedValue("vel_grade");
+				tempBoxItem.warehouse =currentRecord.getFormattedValue("vel_warehouse");				
+				tempBoxItem.grade= currentRecord.getFormattedValue("vel_grade");
 				tempBoxItem.batch= currentRecord.getFormattedValue("vel_batchattribute");
+				tempBoxItem.allocatedAvailable =currentRecord.getFormattedValue("vel_availableforreservation");
+				tempBoxItem.amountReserved =currentRecord.getFormattedValue("vel_amountreserved");
 				tempBoxItem.type="stock";
 				tempBoxItem.id =recordId;
 				tempStockItems.push(tempBoxItem);			
@@ -253,7 +256,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		 render: (h) => h(App, { 
 			 props: { 
 				 DragBoxObj: this.dragboxObj, 
-				 LastBoxName: "Allocation", 
+				 LastBoxName: "Reservation", 
 				 Countries:this.ContryObj,
 				 Seasons:this.SeasonObj,
 				 Grades:this.GradeObj,
