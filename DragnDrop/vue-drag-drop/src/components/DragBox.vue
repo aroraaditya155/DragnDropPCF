@@ -120,7 +120,7 @@ export default {
     Seasons:[],
     Grades:[],
 		Commodities:[],
-    Customers:[],
+    //Customers:[],
     OnClickSearch: []
   },
    data() {

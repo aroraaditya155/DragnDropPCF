@@ -57,6 +57,7 @@ export class Commodity{
     id:string;
     name:string;
 }
+/*
 export class Customers{
     id:number;
     items : Customer[];
@@ -64,4 +65,4 @@ export class Customers{
 export class Customer{
     id:string;
     name:string;
-}
+} */

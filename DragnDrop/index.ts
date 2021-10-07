@@ -1,7 +1,7 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import Vue from 'vue';
 import App from './vue-drag-drop/src/App.vue';
-import { DragBox, Countries,Country, Season, Seasons, Grade, Grades, Commodity, Commodities, Customer, Customers } from "./DragBox";
+import { DragBox, Countries,Country, Season, Seasons, Grade, Grades, Commodity, Commodities } from "./DragBox";
 import { BoxRecord } from "./DragBox";
 
 import DataSetInterfaces = ComponentFramework.PropertyHelper.DataSetApi;
@@ -43,10 +43,10 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 	public tempCommodities:Commodities;
 	public CommodityObj:Commodities[]=[];
 	//....................
-	public tempCustomer:Customer;
-	public CustomerItems:Customer[]=[];
-	public tempCustomers:Customers;
-	public CustomerObj:Customers[]=[];
+	//public tempCustomer:Customer;
+	//public CustomerItems:Customer[]=[];
+	//public tempCustomers:Customers;
+	//public CustomerObj:Customers[]=[];
 	/**
 	 * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
 	 * Data-set values are not initialized here, use updateView.
@@ -85,30 +85,43 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		let tempStockItems: BoxRecord[] = [];		
 		this.dragboxObj = [];
 		if(!context.parameters.CustomerOpporunityProductDataSet.loading){
-				context.parameters.CustomerOpporunityProductDataSet?.sortedRecordIds.forEach((recordId)=>{
-					let currentRecord=context.parameters.CustomerOpporunityProductDataSet.records[recordId];		
-					let tempBoxItem = new BoxRecord();
-					tempBoxItem.name=currentRecord.getFormattedValue("opportunityproductname");
-					tempBoxItem.productName = currentRecord.getFormattedValue("opportunityproductname");
-					tempBoxItem.allocatedAvailable =currentRecord.getFormattedValue("vel_availableforreservation");
-					tempBoxItem.amountReserved =currentRecord.getFormattedValue("vel_amountreserved");
-					tempBoxItem.customerName = currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.customerid");
-					tempBoxItem.grade = currentRecord.getFormattedValue("vel_grade");
-					tempBoxItem.salesAgreement="";
-					tempBoxItem.commodity=currentRecord.getFormattedValue("vel_productcategory");
-					tempBoxItem.season=currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.vel_season");
-					tempBoxItem.type="customer";
-					tempBoxItem.country=currentRecord.getFormattedValue("vel_country");
-					tempBoxItem.id =recordId;
-					tempCustomerItems.push(tempBoxItem);						
-				});
-				
-				if(context.parameters.CustomerOpporunityProductDataSet.sortedRecordIds.length>0){
-					this.CustomerDragboxObj.items =tempCustomerItems;
-					this.dragboxObj.push(this.CustomerDragboxObj);	
-				}			
+			if(context.parameters.CustomerOpporunityProductDataSet.paging !=null && context.parameters.CustomerOpporunityProductDataSet.paging.hasNextPage == true)
+			{
+				//set page size
+				context.parameters.CustomerOpporunityProductDataSet.paging.setPageSize(5000);
+				//load next paging
+				context.parameters.CustomerOpporunityProductDataSet.paging.loadNextPage();
+			}
+			context.parameters.CustomerOpporunityProductDataSet?.sortedRecordIds.forEach((recordId)=>{
+				let currentRecord=context.parameters.CustomerOpporunityProductDataSet.records[recordId];		
+				let tempBoxItem = new BoxRecord();
+				tempBoxItem.name=currentRecord.getFormattedValue("opportunityproductname");
+				tempBoxItem.productName = currentRecord.getFormattedValue("opportunityproductname");
+				tempBoxItem.allocatedAvailable =currentRecord.getFormattedValue("vel_availableforreservation");
+				tempBoxItem.amountReserved =currentRecord.getFormattedValue("vel_amountreserved");
+				tempBoxItem.customerName = currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.customerid");
+				tempBoxItem.grade = currentRecord.getFormattedValue("vel_grade");
+				tempBoxItem.salesAgreement="";
+				tempBoxItem.commodity=currentRecord.getFormattedValue("vel_productcategory");
+				tempBoxItem.season=currentRecord.getFormattedValue("a_34336f4db608ec11b6e500224818491b.vel_season");
+				tempBoxItem.type="customer";
+				tempBoxItem.country=currentRecord.getFormattedValue("vel_country");
+				tempBoxItem.id =recordId;
+				tempCustomerItems.push(tempBoxItem);						
+			});		
+			if(context.parameters.CustomerOpporunityProductDataSet.sortedRecordIds.length>0){
+				this.CustomerDragboxObj.items =tempCustomerItems;
+				this.dragboxObj.push(this.CustomerDragboxObj);	
+			}			
 		}	
 		if(!context.parameters.StockOnHandDataSet.loading){
+			if(context.parameters.StockOnHandDataSet.paging !=null && context.parameters.StockOnHandDataSet.paging.hasNextPage == true)
+			{
+				//set page size
+				context.parameters.StockOnHandDataSet.paging.setPageSize(5000);
+				//load next paging
+				context.parameters.StockOnHandDataSet.paging.loadNextPage();
+			}
 			context.parameters.StockOnHandDataSet?.sortedRecordIds.forEach((recordId)=>{
 				let currentRecord=context.parameters.StockOnHandDataSet.records[recordId];		
 				let tempBoxItem = new BoxRecord();
@@ -132,6 +145,13 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 			}
 		}
 		if(!context.parameters.CountryDataSet.loading){
+			if(context.parameters.CountryDataSet.paging !=null && context.parameters.CountryDataSet.paging.hasNextPage == true)
+			{
+				//set page size
+				context.parameters.CountryDataSet.paging.setPageSize(5000);
+				//load next paging
+				context.parameters.CountryDataSet.paging.loadNextPage();
+			}
 			this.CountryItems=[];
 			context.parameters.CountryDataSet?.sortedRecordIds.forEach((recordId)=>{
 				let currentRecord=context.parameters.CountryDataSet.records[recordId];	
@@ -149,6 +169,13 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 			}
 		}
 		if(!context.parameters.SeasonDataSet.loading){
+			if(context.parameters.SeasonDataSet.paging !=null && context.parameters.SeasonDataSet.paging.hasNextPage == true)
+			{
+				//set page size
+				context.parameters.SeasonDataSet.paging.setPageSize(5000);
+				//load next paging
+				context.parameters.SeasonDataSet.paging.loadNextPage();
+			}
 			this.SeasonItems=[];
 			context.parameters.SeasonDataSet?.sortedRecordIds.forEach((recordId)=>{
 				let currentRecord=context.parameters.SeasonDataSet.records[recordId];	
@@ -169,6 +196,13 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		}
 		//...........Commodity....
 		if(!context.parameters.CommodityDataSet.loading){
+			if(context.parameters.CommodityDataSet.paging !=null && context.parameters.CommodityDataSet.paging.hasNextPage == true)
+			{
+				//set page size
+				context.parameters.CommodityDataSet.paging.setPageSize(5000);
+				//load next paging
+				context.parameters.CommodityDataSet.paging.loadNextPage();
+			}
 			this.CommodityItems=[];
 			context.parameters.CommodityDataSet?.sortedRecordIds.forEach((recordId)=>{
 				let currentRecord=context.parameters.CommodityDataSet.records[recordId];	
@@ -187,6 +221,13 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		}
 		//...........Grade....
 		if(!context.parameters.GradeDataSet.loading){
+			if(context.parameters.GradeDataSet.paging !=null && context.parameters.GradeDataSet.paging.hasNextPage == true)
+			{
+				//set page size
+				context.parameters.GradeDataSet.paging.setPageSize(5000);
+				//load next paging
+				context.parameters.GradeDataSet.paging.loadNextPage();
+			}
 			this.GradeItems=[];
 			context.parameters.GradeDataSet?.sortedRecordIds.forEach((recordId)=>{
 				let currentRecord=context.parameters.GradeDataSet.records[recordId];	
@@ -207,6 +248,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 			
 		}
 		//...........Customer....
+		/*
 		if(!context.parameters.CustomerDataSet.loading){
 			this.CustomerItems=[];
 			context.parameters.CustomerDataSet?.sortedRecordIds.forEach((recordId)=>{
@@ -225,7 +267,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				this.CustomerObj=[];
 				this.CustomerObj.push(this.tempCustomers);
 			}
-		}
+		} */
 		
 		this.vue = new Vue({
 			el: this.appElement, 
@@ -237,7 +279,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 				 Seasons:this.SeasonObj,
 				 Grades:this.GradeObj,
 				 Commodities:this.CommodityObj,
-				 Customers:this.CustomerObj,				
+				// Customers:this.CustomerObj,				
 				 OnClickSearch:this.OnClickSearch,
 			 } 
 		 	}), 
