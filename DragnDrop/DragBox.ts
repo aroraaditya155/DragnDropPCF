@@ -3,8 +3,6 @@ export class DragBox{
     boxNumber: number;
     items : BoxRecord[];
     Name: string;
-    Filters:Filters[];
-
 }
 export class BoxRecord{
     id:string;
@@ -25,15 +23,6 @@ export class BoxRecord{
     season:string;
     country:string;
    // id:string;
-}
-export class Filters{
-    label: string;
-    items:DropDownItem[];
-    type:string;
-}
-export class DropDownItem{
-    name:string;
-    value:string;
 }
 export class Countries{
     id:number;

@@ -21,9 +21,7 @@ export default {
       Seasons:[],
       Grades:[],
 		  Commodities:[],
-      Customers:[],
-      //OnChange: [],
-      //OnChangeCountry: [],
+      Customers:[],      
       OnClickSearch: []
 
   }

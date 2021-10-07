@@ -22,20 +22,20 @@
             </div> -->
             <!-- end Customer -->
             <!-- Grade -->
-            <!-- <div v-for="g in Grades" :key="g.id">
+            <div v-for="g in Grades" :key="g.id">
              <select class="form-control" @change="changeGrade($event)" v-model="selectedGradeValue">
               <option value="" selected disabled>Choose Grade</option>
               <option v-for="Grade in g.items" :value="Grade.id" :key="Grade.id">{{ Grade.name }}</option>
             </select> 
-            </div> -->
+            </div>
             <!-- end Grade -->
             <!-- Commodity -->
-            <!-- <div v-for="c in Commodities" :key="c.id">
+            <div v-for="c in Commodities" :key="c.id">
              <select class="form-control" @change="changeCommodity($event)" v-model="selectedCommodityValue">
               <option value="" selected disabled>Choose Commodity</option>
               <option v-for="Commodity in c.items" :value="Commodity.id" :key="Commodity.id">{{ Commodity.name }}</option>
             </select> 
-            </div> -->
+            </div> 
             <!-- end Commodity -->
              <!-- Season -->
             <div v-for="s in Seasons" :key="s.id">
@@ -121,8 +121,6 @@ export default {
     Grades:[],
 		Commodities:[],
     Customers:[],
-    //OnChange: [],
-    //OnChangeCountry: [],
     OnClickSearch: []
   },
    data() {
@@ -212,8 +210,6 @@ export default {
       this.selectedCustomerValue="";
     },
    changeCountry: function changeCountry(event) {
-      //this.OnChangeCountry(event,this.productname);
-      //alert( event.target.value);
     },
     changeGrade: function changeGrade(event){
 
