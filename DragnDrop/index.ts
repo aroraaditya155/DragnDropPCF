@@ -338,7 +338,7 @@ export class DragnDrop implements ComponentFramework.StandardControl<IInputs, IO
 		}	
 		this._context.parameters.CustomerOpporunityProductDataSet.filtering.setFilter({
 			conditions: conditionsArray,
-			filterOperator: 1 /* Or */
+			filterOperator: 0 /* And */
 		});
 		this._context.parameters.CustomerOpporunityProductDataSet.refresh();
 	}

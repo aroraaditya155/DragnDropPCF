@@ -1,7 +1,6 @@
 <template>
-  <div class="drag-drop-box" v-if="renderComponent">
-    <div class="row">    
-      <div class="col-md-3 drag-col1" v-for="box in DragnDropBox" :key="box.boxNumber">
+  <div  class="drag-drop-box" v-if="renderComponent">    
+      <div class="drag-col1" v-for="box in DragnDropBox" :key="box.boxNumber">
         <div class="p-2 alert alert-warning">
           <h3>{{ box.Name }}</h3>
           <div v-if="box.Name==='Customer'">
@@ -69,7 +68,7 @@
           </draggable>
         </div>
       </div>
-      <div class="col-md-3 drag-col2">
+      <div class="drag-col2">
         <div class="p-2 alert alert-success">
           <h3>{{ LastBoxName }}</h3>
           <div>
@@ -104,10 +103,8 @@
         <button primary v-on:click="saveClick">Save</button>
         <button primary v-on:click="ResetClick">Reset</button>
       </div>
-    </div>
   </div>
 </template>
-
 <script>
 import draggable from "vuedraggable";
 export default {
@@ -208,6 +205,7 @@ export default {
       this.selectedGradeValue="";
       this.selectedCommodityValue="";
       this.selectedCustomerValue="";
+      this.OnClickSearch(this.selectedCountryValue,this.selectedSeasonValue,this.selectedGradeValue,this.selectedCommodityValue,this.selectedCustomerValue);
     },
    changeCountry: function changeCountry(event) {
     },
@@ -240,15 +238,15 @@ export default {
 <style>
 /* CSS styling for JT Johnson Stock On Hand PCF Control */
 /* Jady Mulqueeney */
-/* Version 0.4 - 1 Oct 2021 */
+/* Version 0.5 - 8 Oct 2021 */
 
-.drag-drop-box {
+.ManyToManyDragDrop .drag-drop-box {
     width: auto;
     height: auto;
 }
 
-.drag-col1,
-.drag-col2 {
+.ManyToManyDragDrop .drag-col1,
+.ManyToManyDragDrop .drag-col2 {
     min-height: 75vh;
     width: 28%;
     float: left;
@@ -261,8 +259,8 @@ export default {
     color: #333;
 }
 
-.list-col1,
-.list-col2 {
+.ManyToManyDragDrop .list-col1,
+.ManyToManyDragDrop .list-col2 {
     min-height: 150px;
     background-color: #fff;
     margin: 15px 0;
@@ -272,34 +270,35 @@ export default {
     overflow-y: auto;
 }
 
-.drag-col1:first-of-type .list-col1 {
+.ManyToManyDragDrop .drag-col1:first-of-type .list-col1 {
     height: calc(65vh - 142px);
 }
 
-.drag-col1:nth-of-type(2) .list-col1 {
+.ManyToManyDragDrop .drag-col1:nth-of-type(2) .list-col1 {
     height: 65vh;
 }
 
-.list-col2 {
+.ManyToManyDragDrop .list-col2 {
     background-color: #fff;
     height: calc((65vh / 2) - 52px);
 }
 
-.list-group-item {
+.ManyToManyDragDrop .list-group-item {
     background-color: #fff;
     border: 2px dashed #cfc18f;
     padding: 2px 8px 4px 8px;
     margin-bottom: 8px;
     position: relative;
+    z-index: 2;
 }
 
-.list-col2 .list-group-item {
+.ManyToManyDragDrop .list-col2 .list-group-item {
     border: 2px solid #0A701A;
     padding-top: 6px;
     margin-bottom: 8px;
 }
 
-h3 {
+.ManyToManyDragDrop h3 {
     font-size: 20px;
     font-weight: 600;
     text-transform: capitalize;
@@ -307,39 +306,39 @@ h3 {
     color: #333;
 }
 
-.list-group-item p {
+.ManyToManyDragDrop .list-group-item p {
     padding: 4px 0;
     font-size: 13px;
 }
 
-.list-col1 .list-group-item p:nth-of-type(even) {
+.ManyToManyDragDrop .list-col1 .list-group-item p:nth-of-type(even) {
     background-color: #f4f4f4;
 }
 
-.list-col1 .list-group-item p:nth-of-type(odd) {
+.ManyToManyDragDrop .list-col1 .list-group-item p:nth-of-type(odd) {
     background-color: #fff;
 }
 
-.list-col2 .list-group-item p:nth-of-type(even) {
+.ManyToManyDragDrop .list-col2 .list-group-item p:nth-of-type(even) {
     background-color: #fff;
 }
 
-.list-col2 .list-group-item p:nth-of-type(odd) {
+.ManyToManyDragDrop .list-col2 .list-group-item p:nth-of-type(odd) {
     background-color: #f4f4f4;
 }
 
-.drag-col {
+.ManyToManyDragDrop .drag-col {
     min-height: 300px;
 }
 
-.drag-drop-box select {
+.ManyToManyDragDrop .drag-drop-box select {
     width: 100%;
     height: 42px;
     border: 1px solid #ccc;
     margin-bottom: 8px;
 }
 
-.drag-drop-box button {
+.ManyToManyDragDrop .drag-drop-box button {
     outline: transparent;
     position: relative;
     font-size: 14px;
@@ -357,30 +356,30 @@ h3 {
     color: #fff;
 }
 
-.drag-drop-box button:hover {
+.ManyToManyDragDrop .drag-drop-box button:hover {
     background-color: #0a5416;
     border-color: #0a5416;
 }
 
-.drag-col2 button:nth-of-type(2) {
+.ManyToManyDragDrop .drag-col2 button:nth-of-type(2) {
     background-color: #fff;
     color: #333;
     border-color: #333;
 }
 
-.drag-col2 button:nth-of-type(2):hover {
+.ManyToManyDragDrop .drag-col2 button:nth-of-type(2):hover {
     background-color: #f4f4f4;
     color: #111;
     border-color: #111;
 }
 
-.list-col1 .list-group-item p:first-of-type {
+.ManyToManyDragDrop .list-col1 .list-group-item p:first-of-type {
     font-weight: 700;
     text-align: right;
     color: #0A701A;
 }
 
-.list-col2 .list-group-item p:first-of-type {
+.ManyToManyDragDrop .list-col2 .list-group-item p:first-of-type {
     margin-top: 6px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5">
+  <div class="mt-5">
     <div>
       <drag-box :DragnDropBox="DragBoxObj" :LastBoxName="LastBoxName" :Countries="Countries" :Seasons="Seasons" :Grades="Grades" :Commodities="Commodities"  :OnClickSearch="OnClickSearch"></drag-box>
     </div>
