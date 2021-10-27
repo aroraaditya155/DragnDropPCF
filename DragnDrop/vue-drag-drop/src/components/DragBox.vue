@@ -289,7 +289,6 @@ export default {
     padding: 2px 8px 4px 8px;
     margin-bottom: 8px;
     position: relative;
-    z-index: 2;
 }
 
 .ManyToManyDragDrop .list-col2 .list-group-item {
